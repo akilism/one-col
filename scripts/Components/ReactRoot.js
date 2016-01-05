@@ -6,22 +6,36 @@ import { default as Scan } from "./Scan";
 
 import bg from "../../assets/main-bg.jpg";
 
-const gallery0 = requireAll(require.context('../../assets/gallery/00/', true, /.*/))
+const gallery0 = requireAll(require.context('../../assets/gallery/00/', true, /.*/));
+const gallery1 = requireAll(require.context('../../assets/gallery/01/', true, /.*/));
+const gallery2 = requireAll(require.context('../../assets/gallery/02/', true, /.*/));
+const gallery3 = requireAll(require.context('../../assets/gallery/03/', true, /.*/));
+const gallery4 = requireAll(require.context('../../assets/gallery/04/', true, /.*/));
+const gallery5 = requireAll(require.context('../../assets/gallery/05/', true, /.*/));
+const gallery6 = requireAll(require.context('../../assets/gallery/06/', true, /.*/));
 
 class FreezyGallery extends Scan {
   render() {
-    const {freeze, images, triggered, measurements} = this.props,
+    const {freeze, images, triggered, measurements, id} = this.props,
           activeImage = images[0],
           freezyImages = [],
-          classModifier = (freeze) ? "frozen" : "unfrozen";
+          classModifier = (freeze && !triggered) ? "frozen" : "unfrozen";
 
     return (
-      <div ref="gallery" className={`freezy-gallery ${classModifier}-gallery`} data-scroll={true} data-triggered={triggered}>
+      <div ref="gallery" className={`freezy-gallery ${classModifier}-gallery`} data-scroll={true} data-triggered={triggered} data-id={id}>
         <img src={activeImage} className="freezy-gallery-image" />
         <div className="freezy-frozen-images">
-          {freezyImages}
+          <img src={activeImage} className="freezy-frozen-image" />
         </div>
       </div>
+    );
+  }
+}
+
+class PullQuote extends Component {
+  render() {
+    return (
+      <div className="pull-quote"><span className="markered">{this.props.quote}</span></div>
     );
   }
 }
@@ -36,7 +50,8 @@ export default class ReactRoot extends Component {
         pctScroll: 0,
         contentHeight: 0,
         scrollTriggerPos: 0
-      }
+      },
+      galleryElements: {}
     }
 
     this.handleScroll = _.throttle(this._handleScroll, 16);
@@ -49,7 +64,7 @@ export default class ReactRoot extends Component {
     this.setState({
       measurements: {
         viewportHeight,
-        scrollTriggerPos: viewportHeight * 0.5,
+        scrollTriggerPos: viewportHeight * 0.55,
         viewportWidth,
         viewportTop: 0,
         contentHeight: 0,
@@ -59,8 +74,13 @@ export default class ReactRoot extends Component {
   componentDidMount() {
     window.addEventListener('scroll', this.handleScroll.bind(this));
     window.Root = this;
-
+    const galleryElements = _.reduce(this.refs, (acc, elem, key) => {
+      if(elem instanceof FreezyGallery) { acc[key] = { freeze: false, triggered: false }; }
+      return acc;
+    }, {});
+    // console.log(galleryElements);
     const { measurements } = this.calculateMeasurements();
+    this.setState({galleryElements, measurements});
   }
 
   _handleScroll(ev) {
@@ -72,7 +92,9 @@ export default class ReactRoot extends Component {
           return dist > 0 && dist < 150;
         });
 
+
     if(active.length > 0) {
+      console.log(active[0].attributes["data-id"].value);
       this.setState({measurements, freeze: true});
     } else {
       this.setState({measurements, freeze: false});
@@ -93,6 +115,7 @@ export default class ReactRoot extends Component {
   }
 
   render() {
+    // <FreezyGallery images={gallery1} freeze={this.state.freeze} measurements={this.state.measurements} triggered={false} />
     return (
       <div ref="root" className="react-root" style={{ backgroundImage: `url(${bg})`, width: "100vw" }}>
         <div ref="title" className="title-card">
@@ -108,7 +131,7 @@ export default class ReactRoot extends Component {
           <p className="article-copy">"You should go back," he said. "If you keep going you'll find El Paisa, a guerrilla commander. Have you heard about him? He's a bloodthirsty man, and he's against all of the peace negotiations. Please, you really shouldn't go that way."</p>
           <p className="article-copy">Eventually he let us pass, and two hours later, the night had already fallen upon us as we continued driving. Then the lights of our truck suddenly illuminated a man in the middle of the road, the muzzle of his rifle pointed directly at us.</p>
           <p className="article-copy">"Turn off the lights and get out of the truck!" he screamed. The man was a young guerrilla dressed in civilian clothes. He was flanked by two more armed men.</p>
-          <FreezyGallery images={gallery0} freeze={this.state.freeze} measurements={this.state.measurements} triggered={false} />
+          <FreezyGallery ref="gallery0" images={gallery0} freeze={this.state.freeze} measurements={this.state.measurements} triggered={false} id="gallery0" />
           <p className="article-copy">"Where are you coming from?" one of them shouted. We had apparently passed into FARC territory at some unknown point. "Don't you know that it's forbidden to pass through here after 18,00?"</p>
           <p className="article-copy">We explained that we'd come from Bogotá to make a documentary, although we did not tell them that we had permission from a FARC commander to be there. We weren't sure if this FARC battalion was friendly with the commander who had given us permission to visit.</p>
           <p className="article-copy">"Which way did you come from?" one of the guerrillas asked.</p>
@@ -117,12 +140,11 @@ export default class ReactRoot extends Component {
           <p className="article-copy">"And through an Army checkpoint up there..."</p>
           <p className="article-copy">Then there was silence. He was testing us. If we hadn't admitted that we had talked with the military, we would have been in trouble.</p>
           <p className="article-copy">"Leave then," he said. "You can't stay here. You will get shot, bombed. Go back and remember that you can't travel through here at night."</p>
-          pullquote0 Civilians run community meetings and participate in government, but everyone in the region knows that the guerrillas have the last word.
+          <PullQuote quote="Civilians run community meetings and participate in government, but everyone in the region knows that the guerrillas have the last word." />
           <p className="article-copy">We turned around. After a short drive, we passed through another Army checkpoint in San Vicente del Caguán. In a tent nearby, a small light bulb illuminated the faces of 32 members of the FARC depicted on a wanted poster issued by the government. At the top of the spread was a picture of El Paisa, who has a $5 million bounty on his head. REPORT AND GET THE MONEY, the sign said. WE'LL GET THE PEACE WE ALL WANT.</p>
           <p className="article-copy">We hadn't come to Llanos del Yarí just to meet Colombia's most important guerrilla fighters—we'd also come because, after two years of dialogues in Havana, Cuba, the FARC and the administration of President Juan Manuel Santos were entering the final stage of a historic peace process. On July 20, 2015, FARC leaders had announced a unilateral ceasefire. This had been tried four times since the dialogues started, and each time it failed. In April 2015, in fact, a previous ceasefire had unraveled after four months, when FARC fighters stormed an Army platoon while troops were sleeping, killing 11 soldiers. A month later, government troops retaliated and killed 26 guerrillas. Would this time be different? We wanted to find out.</p>
           <p className="article-copy">We slept that night in a primitive hotel a few blocks away from the Army checkpoint. The next morning, in the daylight, we drove on along a muddy and winding road toward Llanos de Yarí and the FARC.</p>
-          gallery1
-
+          <PullQuote quote={`I asked Laura if she thought peace was possible in Colombia. "Yes," she answered without any trace of doubt. "Because the Bible tells me so."`} />
         </div>
       </div>
     );

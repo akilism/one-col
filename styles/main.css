@@ -62,27 +62,29 @@ h2 {
   background-attachment: fixed;
   flex-wrap: wrap;
   flex-direction: column;
+  padding-bottom: 10vh;
 }
 
 .article {
-  margin: 0 20vw 10vh 20vw;
+  margin: 0 auto 10vh auto;
   font-size: 1.45em;
   line-height: 1.8;
   background-color: #fff;
   /*border: 1px solid #dfdfdf;*/
   border-width: 0 1px;
   font-weight: normal;
-
+  width: 70vw;
+  padding-bottom: 10vh;
 }
 
 .article-copy {
   font-family: Sabon;
   margin: 35px 0;
-  padding: 3vh 12.5vw;
+  padding: 3vh 8vw;
 }
 
 .article-copy:first-child {
-  margin-top: 0;
+  margin-top: 20px;
 }
 
 .article-copy:last-child {
@@ -104,25 +106,97 @@ h2 {
   font-size: 2vw;
 }
 
+.pull-quote {
+  font-size: 2rem;
+  padding: 0 8vw;
+  line-height: 1.25;
+  font-family: Sabon;
+  z-index: 3;
+  position: relative;
+  text-indent: 8%;
+}
+
+.markered {
+  box-decoration-break: clone;
+  -o-box-decoration-break: clone;
+  -moz-box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+  background-color: rgb(114, 149, 94);
+  padding: 4px 2px 0 2px;
+  color: #fff;
+}
+
+.pull-quote::before, .pull-quote:before {
+  font-size: 10rem;
+  position: absolute;
+  content: "\201C";
+  display: inline-block;
+  transform: translate(-101%, -17%);
+  color: rgb(114, 149, 94);
+  z-index: -1;
+}
+
+.pull-quote::after, .pull-quote:after {
+  font-size: 10rem;
+  transform: translate(-39%, -16%);
+  position: absolute;
+  content:"\201D";
+  color: rgb(114, 149, 94);
+  z-index: -1;
+}
+
 
 .freezy-gallery {
   text-align: center;
 }
 
+.freezy-gallery-image {
+  width: 100%;
+  border: 2rem solid #fff;
+}
+
 
 .frozen-gallery {
+/*  width: 100vw;
+  height: 100vh;
+  position: fixed;
+  top: 0;
+  left: 0;*/
+}
+
+/*frozen-gallery .freezy-gallery-image {
+  width: 100vw;
+  height: 100vh;
+}*/
+
+.unfrozen-gallery {
+
+}
+
+.frozen-gallery .freezy-gallery-image {
+  visibility: hidden;
+}
+
+.freezy-frozen-images {
   width: 100vw;
   height: 100vh;
   position: fixed;
   top: 0;
   left: 0;
+  background-color: rgba(1,1,1,0.65);
+  z-index: 1000;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  display: flex;
+  transition: opacity 250ms;
 }
 
-.frozen-gallery .freezy-gallery-image {
-  width: 100vw;
-  height: 100vh;
+.unfrozen-gallery .freezy-frozen-images {
+  opacity: 0;
+  pointer-events: none;
 }
 
-.unfrozen-gallery {
-
+.frozen-gallery .freezy-frozen-images {
+  opacity: 1;
 }
