@@ -1,0 +1,128 @@
+body {
+  font-family: "OpenSans";
+  overflow-x: hidden;
+  background-color: #000;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+a {
+  color: #000;
+}
+
+a:visited {
+  color: #666;
+}
+
+a:active {
+  color: #aaa;
+}
+
+strong {
+  font-weight: bold;
+}
+
+h1 {
+  font: bold 7.5vw "TradeGothic",Helvetica Neue,Helvetica,Arial,sans-serif;
+  text-align: center;
+  line-height: 1;
+}
+
+h2 {
+  margin-bottom: 1.5em;
+  font: bold 1.75em/1em Sabon;
+}
+
+.no-pointer {
+  pointer-events: none;
+}
+
+.copy {
+  font-family: "OpenSans";
+}
+
+.byline {
+  font-family: "OpenSans";
+  font-style: italic;
+}
+
+.headline {
+  font-family: "TradeGothic-BoldCondTwenty";
+}
+
+.react-root {
+  width: 100vw;
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-start;
+  background-size: cover;
+  background-position: center center;
+  background-attachment: fixed;
+  flex-wrap: wrap;
+  flex-direction: column;
+}
+
+.article {
+  margin: 0 20vw 10vh 20vw;
+  font-size: 1.45em;
+  line-height: 1.8;
+  background-color: #fff;
+  /*border: 1px solid #dfdfdf;*/
+  border-width: 0 1px;
+  font-weight: normal;
+
+}
+
+.article-copy {
+  font-family: Sabon;
+  margin: 35px 0;
+  padding: 3vh 12.5vw;
+}
+
+.article-copy:first-child {
+  margin-top: 0;
+}
+
+.article-copy:last-child {
+  margin-bottom: 0;
+}
+
+.title-card {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  color: #fff;
+}
+
+.title-card .byline {
+  margin: 10px 0;
+  font-size: 2vw;
+}
+
+
+.freezy-gallery {
+  text-align: center;
+}
+
+
+.frozen-gallery {
+  width: 100vw;
+  height: 100vh;
+  position: fixed;
+  top: 0;
+  left: 0;
+}
+
+.frozen-gallery .freezy-gallery-image {
+  width: 100vw;
+  height: 100vh;
+}
+
+.unfrozen-gallery {
+
+}

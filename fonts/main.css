@@ -1,0 +1,32 @@
+@font-face {
+  font-family: 'OpenSans';
+  src: url('./OpenSans/OpenSans-Regular.eot');
+  src: local('☺'),
+       url('./OpenSans/OpenSans-Regular.woff') format('woff'),
+       url('./OpenSans/OpenSans-Regular.ttf') format('truetype'),
+       url('./OpenSans/OpenSans-Regular.svg') format('svg');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'TradeGothic-BoldCondTwenty';
+  src: url('./TradeGothic/TradeGothic-BoldCond20.eot');
+  src: local('☺'),
+       url('./TradeGothic/TradeGothic-BoldCond20.woff') format('woff'),
+       url('./TradeGothic/TradeGothic-BoldCond20.ttf') format('truetype'),
+       url('./TradeGothic/TradeGothic-BoldCond20.svg') format('svg');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'TradeGothic-CondEighteen';
+  src: url('./TradeGothic/TradeGothic-Cond18.eot');
+  src: local('☺'),
+       url('./TradeGothic/TradeGothic-Cond18.woff') format('woff'),
+       url('./TradeGothic/TradeGothic-Cond18.ttf') format('truetype'),
+       url('./TradeGothic/TradeGothic-Cond18.svg') format('svg');
+  font-weight: normal;
+  font-style: normal;
+}
