@@ -199,4 +199,9 @@ h2 {
 
 .frozen-gallery .freezy-frozen-images {
   opacity: 1;
+  cursor: pointer;
+}
+
+.freezy-frozen-image {
+  height: 90%;
 }

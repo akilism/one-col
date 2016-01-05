@@ -6,25 +6,36 @@ import { default as Scan } from "./Scan";
 
 import bg from "../../assets/main-bg.jpg";
 
-const gallery0 = requireAll(require.context('../../assets/gallery/00/', true, /.*/));
-const gallery1 = requireAll(require.context('../../assets/gallery/01/', true, /.*/));
-const gallery2 = requireAll(require.context('../../assets/gallery/02/', true, /.*/));
-const gallery3 = requireAll(require.context('../../assets/gallery/03/', true, /.*/));
-const gallery4 = requireAll(require.context('../../assets/gallery/04/', true, /.*/));
-const gallery5 = requireAll(require.context('../../assets/gallery/05/', true, /.*/));
-const gallery6 = requireAll(require.context('../../assets/gallery/06/', true, /.*/));
+const galleryImages0 = requireAll(require.context('../../assets/gallery/00/', true, /.*/));
+const galleryImages1 = requireAll(require.context('../../assets/gallery/01/', true, /.*/));
+const galleryImages2 = requireAll(require.context('../../assets/gallery/02/', true, /.*/));
+const galleryImages3 = requireAll(require.context('../../assets/gallery/03/', true, /.*/));
+const galleryImages4 = requireAll(require.context('../../assets/gallery/04/', true, /.*/));
+const galleryImages5 = requireAll(require.context('../../assets/gallery/05/', true, /.*/));
+const galleryImages6 = requireAll(require.context('../../assets/gallery/06/', true, /.*/));
 
 class FreezyGallery extends Scan {
+  componentWillReceiveProps() {
+    // this.props.unfreezer();
+  }
+
+  unfreeze() {
+    console.log("click");
+    this.props.unfreezer();
+  }
+
   render() {
     const {freeze, images, triggered, measurements, id} = this.props,
           activeImage = images[0],
           freezyImages = [],
           classModifier = (freeze && !triggered) ? "frozen" : "unfrozen";
 
+          //add a click handler to show gallery when you click on inline image.
+          //finish logic to swap images && unfreeze automagically when you've seen the last image.
     return (
       <div ref="gallery" className={`freezy-gallery ${classModifier}-gallery`} data-scroll={true} data-triggered={triggered} data-id={id}>
         <img src={activeImage} className="freezy-gallery-image" />
-        <div className="freezy-frozen-images">
+        <div onClick={this.unfreeze.bind(this)} className="freezy-frozen-images">
           <img src={activeImage} className="freezy-frozen-image" />
         </div>
       </div>
@@ -75,7 +86,7 @@ export default class ReactRoot extends Component {
     window.addEventListener('scroll', this.handleScroll.bind(this));
     window.Root = this;
     const galleryElements = _.reduce(this.refs, (acc, elem, key) => {
-      if(elem instanceof FreezyGallery) { acc[key] = { freeze: false, triggered: false }; }
+      if(elem instanceof FreezyGallery) { acc[key] = { freeze: false, triggered: false, idx: 0 }; }
       return acc;
     }, {});
     // console.log(galleryElements);
@@ -84,7 +95,10 @@ export default class ReactRoot extends Component {
   }
 
   _handleScroll(ev) {
-    const {measurements} = this.calculateMeasurements(),
+    if(this.state.freeze) {
+      window.scrollTo(0, this.state.measurements.viewportTop);
+    } else {
+      const {measurements} = this.calculateMeasurements(),
         pctScroll = measurements.pctScroll,
         scrollBuddies = document.querySelectorAll("[data-scroll=true]"),
         active = _.filter(scrollBuddies, (sb) => {
@@ -92,11 +106,16 @@ export default class ReactRoot extends Component {
           return dist > 0 && dist < 150;
         });
 
-
-    if(active.length > 0) {
-      console.log(active[0].attributes["data-id"].value);
-      this.setState({measurements, freeze: true});
-    } else {
+      if(active.length > 0) {
+        const key = active[0].attributes["data-id"].value,
+              gallery = this.state.galleryElements[key];
+        let galleryElements = this.state.galleryElements;
+        if(!galleryElements[key].triggered) {
+          galleryElements[key].freeze = true;
+          this.setState({measurements, freeze: true, galleryElements});
+          return;
+        }
+      }
       this.setState({measurements, freeze: false});
     }
   }
@@ -114,8 +133,17 @@ export default class ReactRoot extends Component {
       pctScroll }};
   }
 
+  unfreeze(galleryKey) {
+    let galleryElements = this.state.galleryElements;
+    galleryElements[galleryKey].freeze = false;
+    galleryElements[galleryKey].triggered = true;
+    this.setState({freeze: false, galleryElements});
+  }
+
   render() {
     // <FreezyGallery images={gallery1} freeze={this.state.freeze} measurements={this.state.measurements} triggered={false} />
+    const gallery0 = this.state.galleryElements["gallery0"] || {freeze: false, triggered: false, idx: 0};
+
     return (
       <div ref="root" className="react-root" style={{ backgroundImage: `url(${bg})`, width: "100vw" }}>
         <div ref="title" className="title-card">
@@ -131,7 +159,7 @@ export default class ReactRoot extends Component {
           <p className="article-copy">"You should go back," he said. "If you keep going you'll find El Paisa, a guerrilla commander. Have you heard about him? He's a bloodthirsty man, and he's against all of the peace negotiations. Please, you really shouldn't go that way."</p>
           <p className="article-copy">Eventually he let us pass, and two hours later, the night had already fallen upon us as we continued driving. Then the lights of our truck suddenly illuminated a man in the middle of the road, the muzzle of his rifle pointed directly at us.</p>
           <p className="article-copy">"Turn off the lights and get out of the truck!" he screamed. The man was a young guerrilla dressed in civilian clothes. He was flanked by two more armed men.</p>
-          <FreezyGallery ref="gallery0" images={gallery0} freeze={this.state.freeze} measurements={this.state.measurements} triggered={false} id="gallery0" />
+          <FreezyGallery ref="gallery0" unfreezer={this.unfreeze.bind(this, "gallery0")} idx={gallery0.idx} images={galleryImages0} freeze={gallery0.freeze} measurements={this.state.measurements} triggered={gallery0.triggered} id="gallery0" />
           <p className="article-copy">"Where are you coming from?" one of them shouted. We had apparently passed into FARC territory at some unknown point. "Don't you know that it's forbidden to pass through here after 18,00?"</p>
           <p className="article-copy">We explained that we'd come from Bogotá to make a documentary, although we did not tell them that we had permission from a FARC commander to be there. We weren't sure if this FARC battalion was friendly with the commander who had given us permission to visit.</p>
           <p className="article-copy">"Which way did you come from?" one of the guerrillas asked.</p>
