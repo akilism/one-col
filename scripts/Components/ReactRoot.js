@@ -149,6 +149,7 @@ export default class ReactRoot extends Component {
         <div ref="title" className="title-card">
           <h1 className="headline">Guerrillas in the Mist: Seven Days in Rebel-Held Territory in Colombia</h1>
           <div className="byline">By Juan Camilo Maldonado Tovar</div>
+          <div className="byline">Photos by Carlos Villalón</div>
           <div className="date">December 3, 2015</div>
         </div>
         <div ref="article" className="article">
