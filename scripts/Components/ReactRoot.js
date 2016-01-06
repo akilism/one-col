@@ -101,7 +101,7 @@ export default class ReactRoot extends Component {
 
   handleFrozenScroll() {
     window.scrollTo(0, this.state.measurements.viewportTop);
-    if(this.state.frozenCount % 24 === 0) {
+    if(this.state.frozenCount % 48 === 0) {
       let {activeElem, galleryElements} = this.state,
           idx = galleryElements[activeElem].idx;
       galleryElements[activeElem].idx = idx + 1;
