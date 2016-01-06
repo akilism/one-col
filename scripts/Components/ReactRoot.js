@@ -38,7 +38,7 @@ class FreezyGallery extends Component {
           //add a click handler to show gallery when you click on inline image.
     return (
       <div ref="gallery" className={`freezy-gallery ${classModifier}-gallery`} data-scroll={true} data-triggered={triggered} data-id={id}>
-        <img src={activeImage} className="freezy-gallery-image" onClick={this.showGallery.bind(this)} />
+        <img src={images[0]} className="freezy-gallery-image" onClick={this.showGallery.bind(this)} />
         <div onClick={this.unfreeze.bind(this)} className="freezy-frozen-images">
           <img src={activeImage} className="freezy-frozen-image" />
         </div>
