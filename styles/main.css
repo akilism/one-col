@@ -53,7 +53,7 @@ h2 {
 }
 
 .react-root {
-  width: 100vw;
+  width: 100%;
   display: flex;
   align-items: flex-start;
   justify-content: flex-start;
@@ -73,18 +73,18 @@ h2 {
   /*border: 1px solid #dfdfdf;*/
   border-width: 0 1px;
   font-weight: normal;
-  width: 70vw;
+  width: 65vw;
   padding-bottom: 10vh;
 }
 
 .article-copy {
   font-family: Sabon;
-  margin: 1em 0;
-  padding: 3vh 8vw;
+  margin: 0.85em 0;
+  padding: 2vh 6.5vw;
 }
 
 .article-copy:first-child {
-  margin-top: 0.85em;
+  margin-top: 0.65em;
 }
 
 .article-copy:last-child {
@@ -92,7 +92,7 @@ h2 {
 }
 
 .title-card {
-  width: 100vw;
+  width: 100%;
   height: 100vh;
   display: flex;
   justify-content: center;
@@ -153,6 +153,7 @@ h2 {
 .freezy-gallery-image {
   width: 100%;
   border: 2rem solid #fff;
+  cursor: pointer;
 }
 
 
@@ -203,5 +204,5 @@ h2 {
 }
 
 .freezy-frozen-image {
-  height: 95%;
+  height: 98%;
 }

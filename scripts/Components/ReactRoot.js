@@ -19,6 +19,10 @@ class FreezyGallery extends Component {
     this.props.unfreezer();
   }
 
+  showGallery() {
+    this.props.showGallery();
+  }
+
   componentWillReceiveProps(nextProps) {
     if((nextProps.idx >= nextProps.images.length) && !nextProps.triggered) {
       this.unfreeze();
@@ -34,7 +38,7 @@ class FreezyGallery extends Component {
           //add a click handler to show gallery when you click on inline image.
     return (
       <div ref="gallery" className={`freezy-gallery ${classModifier}-gallery`} data-scroll={true} data-triggered={triggered} data-id={id}>
-        <img src={activeImage} className="freezy-gallery-image" />
+        <img src={activeImage} className="freezy-gallery-image" onClick={this.showGallery.bind(this)} />
         <div onClick={this.unfreeze.bind(this)} className="freezy-frozen-images">
           <img src={activeImage} className="freezy-frozen-image" />
         </div>
@@ -75,7 +79,7 @@ export default class ReactRoot extends Component {
     this.setState({
       measurements: {
         viewportHeight,
-        scrollTriggerPos: viewportHeight * 0.3,
+        scrollTriggerPos: viewportHeight * 0.15,
         viewportWidth,
         viewportTop: 0,
         contentHeight: 0,
@@ -97,11 +101,10 @@ export default class ReactRoot extends Component {
 
   handleFrozenScroll() {
     window.scrollTo(0, this.state.measurements.viewportTop);
-    if(this.state.frozenCount % 48 === 0) {
+    if(this.state.frozenCount % 24 === 0) {
       let {activeElem, galleryElements} = this.state,
           idx = galleryElements[activeElem].idx;
       galleryElements[activeElem].idx = idx + 1;
-      console.log(galleryElements[activeElem]);
       this.setState({galleryElements, frozenCount: this.state.frozenCount + 1});
     } else {
       this.setState({frozenCount: this.state.frozenCount + 1});
@@ -158,6 +161,14 @@ export default class ReactRoot extends Component {
     this.setState({freeze: false, galleryElements});
   }
 
+  showGallery(galleryKey) {
+    let galleryElements = this.state.galleryElements;
+    galleryElements[galleryKey].idx = 0;
+    galleryElements[galleryKey].freeze = true;
+    galleryElements[galleryKey].triggered = false;
+    this.setState({freeze: true, activeElem: galleryKey, frozenCount: 1, galleryElements});
+  }
+
   render() {
     // <FreezyGallery images={gallery1} freeze={this.state.freeze} measurements={this.state.measurements} triggered={false} />
     const gallery0 = this.state.galleryElements["gallery0"] || {freeze: false, triggered: false, idx: 0},
@@ -181,24 +192,24 @@ export default class ReactRoot extends Component {
           <p className="article-copy">"You should go back," he said. "If you keep going you'll find El Paisa, a guerrilla commander. Have you heard about him? He's a bloodthirsty man, and he's against all of the peace negotiations. Please, you really shouldn't go that way."</p>
           <p className="article-copy">Eventually he let us pass, and two hours later, the night had already fallen upon us as we continued driving. Then the lights of our truck suddenly illuminated a man in the middle of the road, the muzzle of his rifle pointed directly at us.</p>
           <p className="article-copy">"Turn off the lights and get out of the truck!" he screamed. The man was a young guerrilla dressed in civilian clothes. He was flanked by two more armed men.</p>
-          <FreezyGallery ref="gallery0" unfreezer={this.unfreeze.bind(this, "gallery0")} idx={gallery0.idx} images={galleryImages0} freeze={gallery0.freeze} measurements={this.state.measurements} triggered={gallery0.triggered} id="gallery0" />
+          <FreezyGallery ref="gallery0" unfreezer={this.unfreeze.bind(this, "gallery0")} showGallery={this.showGallery.bind(this, "gallery0")} idx={gallery0.idx} images={galleryImages0} freeze={gallery0.freeze} measurements={this.state.measurements} triggered={gallery0.triggered} id="gallery0" />
           <p className="article-copy">"Where are you coming from?" one of them shouted. We had apparently passed into FARC territory at some unknown point. "Don't you know that it's forbidden to pass through here after 18,00?"</p>
           <p className="article-copy">We explained that we'd come from Bogotá to make a documentary, although we did not tell them that we had permission from a FARC commander to be there. We weren't sure if this FARC battalion was friendly with the commander who had given us permission to visit.</p>
-          <p className="article-copy">"Which way did you come from?" one of the guerrillas asked.</p>
-          <p className="article-copy">"Bogotá, Girardot, Neiva..." our fixer answered.</p>
-          <p className="article-copy">"That's it?"</p>
-          <p className="article-copy">"And through an Army checkpoint up there..."</p>
+          <p className="article-copy">"Which way did you come from?" one of the guerrillas asked.<br/>
+            "Bogotá, Girardot, Neiva..." our fixer answered.<br/>
+            "That's it?"<br/>
+            "And through an Army checkpoint up there..."</p>
           <p className="article-copy">Then there was silence. He was testing us. If we hadn't admitted that we had talked with the military, we would have been in trouble.</p>
           <p className="article-copy">"Leave then," he said. "You can't stay here. You will get shot, bombed. Go back and remember that you can't travel through here at night."</p>
           <PullQuote quote="Civilians run community meetings and participate in government, but everyone in the region knows that the guerrillas have the last word." />
           <p className="article-copy">We turned around. After a short drive, we passed through another Army checkpoint in San Vicente del Caguán. In a tent nearby, a small light bulb illuminated the faces of 32 members of the FARC depicted on a wanted poster issued by the government. At the top of the spread was a picture of El Paisa, who has a $5 million bounty on his head. REPORT AND GET THE MONEY, the sign said. WE'LL GET THE PEACE WE ALL WANT.</p>
           <p className="article-copy">We hadn't come to Llanos del Yarí just to meet Colombia's most important guerrilla fighters—we'd also come because, after two years of dialogues in Havana, Cuba, the FARC and the administration of President Juan Manuel Santos were entering the final stage of a historic peace process. On July 20, 2015, FARC leaders had announced a unilateral ceasefire. This had been tried four times since the dialogues started, and each time it failed. In April 2015, in fact, a previous ceasefire had unraveled after four months, when FARC fighters stormed an Army platoon while troops were sleeping, killing 11 soldiers. A month later, government troops retaliated and killed 26 guerrillas. Would this time be different? We wanted to find out.</p>
           <p className="article-copy">We slept that night in a primitive hotel a few blocks away from the Army checkpoint. The next morning, in the daylight, we drove on along a muddy and winding road toward Llanos de Yarí and the FARC.</p>
-          <FreezyGallery ref="gallery1" unfreezer={this.unfreeze.bind(this, "gallery1")} idx={gallery1.idx} images={galleryImages1} freeze={gallery1.freeze} measurements={this.state.measurements} triggered={gallery1.triggered} id="gallery1" />
+          <FreezyGallery ref="gallery1" unfreezer={this.unfreeze.bind(this, "gallery1")} showGallery={this.showGallery.bind(this, "gallery1")} idx={gallery1.idx} images={galleryImages1} freeze={gallery1.freeze} measurements={this.state.measurements} triggered={gallery1.triggered} id="gallery1" />
           <p className="article-copy">There we were, still waiting in front of the pool hall. The surrounding village was a shoddy little dump of a dozen huts—a vegetable stand, a school, a beer shop. A FARC commander had promised to pick us up, but still no one had come, except some farmers and the random woman with the bird on her shoulder.</p>
           <p className="article-copy">Finally, after more than 24 hours of standing sentry in front of that pool hall, and just as we were about to give up, a man in civilian clothes got off a motorcycle and called to us. He had a stern grimace on his face and told us to follow him. He guided us through the Yarí plains and then led us to a few solitary houses at the base of the hills. As I scanned a crowd of some FARC militiamen gathered in front of one of the houses, I noticed a familiar face—the woman with the green parakeet. Seeing her made me realize that FARC members had been there, watching over us, the whole time.</p>
           <p className="article-copy">She waved and smiled. Then, quietly, she led us to a big house in a deep valley. In front of the red wooden hacienda were at least 20 men, many wearing fatigues, some holding automatic rifles. They were members of Frente 63's Combatientes del Yarí, the eastern front of the FARC. From a pole on one side of the house flew the group's flag—two rifles crossed in front of Colombia's national colors: yellow, blue, and red. On the other side was a white flag signifying their commitment to the unilateral ceasefire.</p>
-          <FreezyGallery ref="gallery2" unfreezer={this.unfreeze.bind(this, "gallery2")} idx={gallery2.idx} images={galleryImages2} freeze={gallery2.freeze} measurements={this.state.measurements} triggered={gallery2.triggered} id="gallery2" />
+          <FreezyGallery ref="gallery2" unfreezer={this.unfreeze.bind(this, "gallery2")} showGallery={this.showGallery.bind(this, "gallery2")} idx={gallery2.idx} images={galleryImages2} freeze={gallery2.freeze} measurements={this.state.measurements} triggered={gallery2.triggered} id="gallery2" />
           <p className="article-copy">A chubby and friendly-looking woman walked in our direction from the property's entrance and greeted us warmly. She wore a green uniform and combat boots. Everything happened so quickly. It wasn't clear at what moment we had stopped being among civilians and joined the guerrillas. We were now, without a doubt, standing in the heart of FARC territory.</p>
           <p className="article-copy">The friendly guerrilla woman got on her motorbike and guided our truck through hidden roads that ran behind the pastures, through forking paths, and little by little, three hours later, she brought us deep into a desolate savanna with no fences or livestock or houses or roads. All around us were jungle corridors and mazy paths that led to the Putumayo River and up into the mountains, virginal and immense. At the end of each of these paths were more guerrillas, waiting to see what would come next: peace or more war.</p>
           <p className="article-copy">The date was July 21—just one day after the FARC began its sixth unilateral ceasefire since the peace talks began in 2012. In Havana, the Castro administration and Norway had served as a mediators between the FARC and the Colombian government. As part of the negotiations, the FARC had made pledges of peace multiple times—but each time, they'd done so without actually agreeing to stop fighting. In past negotiations, during the 1980s and early 2000s, the FARC had exploited truces to strengthen their military positions. This time, the government wasn't willing to let this happen. Thus the rules were clear: While the two sides talked about peace, they continued to fight.</p>
@@ -208,7 +219,7 @@ export default class ReactRoot extends Component {
           <p className="article-copy">The children weren't attending school this year because, their mother explained, the nearest school didn't have any teachers. The family couldn't afford to send the kids to the next-closest school—a public boarding school run by the Catholic Church—so the kids were helping their grandmother with work on the hacienda and, in their spare time, pretending to be guerrilla fighters.</p>
           <p className="article-copy">Laura was ill. She had diabetes and suffered from chronic dizziness and nausea, but she didn't have regular access to a doctor. Traveling to San Vicente de Caguán's hospital would cost her about $100, which is half her monthly earnings. Instead, Laura got her medication from a bus that drove by her home every two weeks. Sometimes she had to let the bus pass by because she didn't have enough money to pay.</p>
           <p className="article-copy">Like most farmers in the region, Laura and her family lived under the FARC's rule and followed their laws. "It's better this way—whoever kills or steals, they have to [answer to the FARC]," another farmer had told me. "Of course we need to pay them a tax. Every sale, every livestock head has its price," he explained. As in the rest of the country, local juntas composed of civilians deal with everyday problems and solutions for the community—housing, public services, making demands of local officials. The taxes had made life more difficult for poor peasants, but the ones I spoke with believed the FARC's laws were as fair as the federal government's. Civilians ran the community meetings, locals told me, giving people an opportunity to participate in government— though everyone in the region knows that the guerrillas have the last word.</p>
-          <FreezyGallery ref="gallery3" unfreezer={this.unfreeze.bind(this, "gallery3")} idx={gallery3.idx} images={galleryImages3} freeze={gallery3.freeze} measurements={this.state.measurements} triggered={gallery3.triggered} id="gallery3" />
+          <FreezyGallery ref="gallery3" unfreezer={this.unfreeze.bind(this, "gallery3")} showGallery={this.showGallery.bind(this, "gallery3")} idx={gallery3.idx} images={galleryImages3} freeze={gallery3.freeze} measurements={this.state.measurements} triggered={gallery3.triggered} id="gallery3" />
           <p className="article-copy">Chepe, a large, shy man, was in the company of 30 guerrillas when I met him for an interview. We were at a FARC camp that had been temporarily constructed out of rough-hewn tree trunks and huge green leaves, a few miles away from Granny Laura's house. Even though he spoke quietly, I could detect in his accent that he had grown up in a wealthy family in Bogotá. Chepe had been born in the jungle of Caquetá, but he was raised in Colombia's capital from a young age. He went to the Colegio Claretiano primary school and then Colegio San Viator, an upper-middle-class high school. He was called Jorge Suárez then, sharing a surname with the FARC commander Víctor Julio Suárez Rojas—his father. The elder Suárez died on September 22, 2010, after seven tons of government explosives fell on his guerrilla camp.</p>
           <p className="article-copy">"The comrades wanted me to study in the city and then to come back here to help with the revolution," he told me. "When I was in ninth grade, the government started to apply pressure, and the paramilitaries were looking to make us disappear. So I studied up to ninth grade and then came back here with my dad. I spent eleven years with him.</p>
           <p className="article-copy">"I wonder about my friends from back then," he said. "What would they think if they knew that I'm here? They are probably doctors, politicians, engineers. I didn't have the chance to go to university, but I studied the revolution."</p>
