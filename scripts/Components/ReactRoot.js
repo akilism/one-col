@@ -14,9 +14,16 @@ const galleryImages4 = requireAll(require.context('../../assets/gallery/04/', tr
 const galleryImages5 = requireAll(require.context('../../assets/gallery/05/', true, /.*/));
 const galleryImages6 = requireAll(require.context('../../assets/gallery/06/', true, /.*/));
 
-class FreezyGallery extends Scan {
-  componentWillReceiveProps() {
+class FreezyGallery extends Component {
+  componentWillReceiveProps(nextProps) {
     // this.props.unfreezer();
+    if((nextProps.idx > nextProps.images.length) && !nextProps.triggered) {
+      this.unfreeze();
+    }
+  }
+
+  shouldComponentUpdate(nextProps) {
+    return (nextProps.idx < this.props.images.length);
   }
 
   unfreeze() {
@@ -25,8 +32,8 @@ class FreezyGallery extends Scan {
   }
 
   render() {
-    const {freeze, images, triggered, measurements, id} = this.props,
-          activeImage = images[0],
+    const {freeze, images, triggered, measurements, id, idx} = this.props,
+          activeImage = images[idx],
           freezyImages = [],
           classModifier = (freeze && !triggered) ? "frozen" : "unfrozen";
 
@@ -85,38 +92,56 @@ export default class ReactRoot extends Component {
   componentDidMount() {
     window.addEventListener('scroll', this.handleScroll.bind(this));
     window.Root = this;
+
     const galleryElements = _.reduce(this.refs, (acc, elem, key) => {
       if(elem instanceof FreezyGallery) { acc[key] = { freeze: false, triggered: false, idx: 0 }; }
       return acc;
     }, {});
-    // console.log(galleryElements);
+
     const { measurements } = this.calculateMeasurements();
     this.setState({galleryElements, measurements});
   }
 
+  handleFrozenScroll() {
+    window.scrollTo(0, this.state.measurements.viewportTop);
+    if(this.state.frozenCount % 24 === 0) {
+      let {activeElem, galleryElements} = this.state,
+          idx = galleryElements[activeElem].idx;
+      galleryElements[activeElem].idx = idx + 1;
+      console.log(galleryElements[activeElem]);
+      this.setState({galleryElements, frozenCount: this.state.frozenCount + 1});
+    } else {
+      this.setState({frozenCount: this.state.frozenCount + 1});
+    }
+  }
+
+  handleUnFrozenScroll() {
+    const {measurements} = this.calculateMeasurements(),
+      pctScroll = measurements.pctScroll,
+      scrollBuddies = document.querySelectorAll("[data-scroll=true]"),
+      active = _.filter(scrollBuddies, (sb) => {
+        const dist = window.pageYOffset - (sb.offsetTop - this.state.measurements.scrollTriggerPos);
+        return dist > 0 && dist < 150;
+      });
+    if(active.length > 0) {
+      const key = active[0].attributes["data-id"].value,
+            gallery = this.state.galleryElements[key];
+      let galleryElements = this.state.galleryElements;
+      if(!galleryElements[key].triggered) {
+        galleryElements[key].freeze = true;
+        galleryElements[key].start = pctScroll;
+        this.setState({measurements, freeze: true, galleryElements, activeElem: key, frozenCount: 1});
+        return;
+      }
+    }
+    this.setState({measurements, freeze: false});
+  }
+
   _handleScroll(ev) {
     if(this.state.freeze) {
-      window.scrollTo(0, this.state.measurements.viewportTop);
+      return this.handleFrozenScroll();
     } else {
-      const {measurements} = this.calculateMeasurements(),
-        pctScroll = measurements.pctScroll,
-        scrollBuddies = document.querySelectorAll("[data-scroll=true]"),
-        active = _.filter(scrollBuddies, (sb) => {
-          const dist = window.pageYOffset - (sb.offsetTop - this.state.measurements.scrollTriggerPos);
-          return dist > 0 && dist < 150;
-        });
-
-      if(active.length > 0) {
-        const key = active[0].attributes["data-id"].value,
-              gallery = this.state.galleryElements[key];
-        let galleryElements = this.state.galleryElements;
-        if(!galleryElements[key].triggered) {
-          galleryElements[key].freeze = true;
-          this.setState({measurements, freeze: true, galleryElements});
-          return;
-        }
-      }
-      this.setState({measurements, freeze: false});
+      return this.handleUnFrozenScroll();
     }
   }
 
