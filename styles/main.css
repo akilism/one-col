@@ -67,7 +67,7 @@ h2 {
 
 .article {
   margin: 0 auto 10vh auto;
-  font-size: 1.45em;
+  font-size: 1.25em;
   line-height: 1.8;
   background-color: #fff;
   /*border: 1px solid #dfdfdf;*/
@@ -79,12 +79,12 @@ h2 {
 
 .article-copy {
   font-family: Sabon;
-  margin: 35px 0;
+  margin: 1em 0;
   padding: 3vh 8vw;
 }
 
 .article-copy:first-child {
-  margin-top: 20px;
+  margin-top: 0.85em;
 }
 
 .article-copy:last-child {
@@ -203,5 +203,5 @@ h2 {
 }
 
 .freezy-frozen-image {
-  height: 90%;
+  height: 95%;
 }
